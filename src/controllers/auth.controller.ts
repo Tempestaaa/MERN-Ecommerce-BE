@@ -45,7 +45,11 @@ export const loginUser = expressAsyncHandler(
         maxAge: 72 * 60 * 60 * 1000,
       });
       res.status(200).json({
-        user,
+        username: user.username,
+        fullName: user.fullName,
+        avatar: user.avatar,
+        isAdmin: user.isAdmin,
+        cart: user.cart,
         access_token: generateToken(user._id),
       });
     } else {
