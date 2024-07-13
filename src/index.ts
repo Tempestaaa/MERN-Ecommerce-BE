@@ -9,6 +9,8 @@ import dbConnect from "./configs/dbConnect";
 import authRoutes from "./routes/auth.route";
 import productRoutes from "./routes/product.route";
 import userRoutes from "./routes/user.route";
+import brandRoutes from "./routes/brand.route";
+import categoryRoutes from "./routes/category.route";
 
 // CLOUDINARY CONFIG
 cloudinary.config({
@@ -33,6 +35,8 @@ const port = process.env.PORT || 3000;
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/brands", brandRoutes);
+app.use("/api/categorys", categoryRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

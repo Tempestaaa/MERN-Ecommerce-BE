@@ -24,17 +24,17 @@ router.post(
   async (req: Request, res: Response) => {
     const files = req.files as Express.Multer.File[];
     const body = req.body;
-    const data = { body, files };
-    res.json(data);
-    // const uploadFiles = files.map(async (item) => {
-    //   const b64 = Buffer.from(item.buffer).toString("base64");
-    //   let dataUri = "data:" + item.mimetype + ";base64," + b64;
-    //   const uploadRes = await cloudinary.uploader.upload(dataUri);
-    //   return uploadRes.url;
-    // });
+    // res.json(data);
+    const uploadFiles = files.map(async (item) => {
+      const b64 = Buffer.from(item.buffer).toString("base64");
+      let dataUri = "data:" + item.mimetype + ";base64," + b64;
+      const uploadRes = await cloudinary.uploader.upload(dataUri);
+      return uploadRes.url;
+    });
 
-    // const imgUrls = await Promise.all(uploadFiles);
-    // res.json(imgUrls);
+    const imgUrls = await Promise.all(uploadFiles);
+    const data = { body, imgUrls };
+    res.json(data);
   }
 );
 

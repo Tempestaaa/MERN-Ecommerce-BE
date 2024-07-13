@@ -1,25 +1,57 @@
 import mongoose from "mongoose";
+import { iBrand } from "./brand.model";
+import { iCategory } from "./category.model";
+import { iReview } from "./review.model";
 
 interface iProduct {
   _id: string;
   name: string;
-  image: string;
-  category: string;
-  newPrice: number;
-  oldPrice: number;
-  date: Date;
-  available: boolean;
+  slug: string;
+  desc: string;
+  images: string;
+  colors: string;
+  sizes: string;
+  brand: iBrand;
+  category: iCategory;
+  inStock: number;
+  rating: number;
+  price: number;
+  sold: number;
+  isDiscount: boolean;
+  numOfReviews: number;
+  reviews: iReview[];
 }
 
-const productSchema = new mongoose.Schema(
+const productSchema = new mongoose.Schema<iProduct>(
   {
     name: { type: String, required: true },
-    image: { type: String, default: "https://picsum.photos/id/237/200/300" },
-    category: { type: String, required: true, enum: ["men", "women", "kids"] },
-    newPrice: { type: Number, required: true },
-    oldPrice: { type: Number },
-    date: { type: Date, default: Date.now },
-    available: { type: Boolean, default: true },
+    slug: { type: String, required: true, unique: true, lowercase: true },
+    desc: { type: String, required: true },
+    images: [{ type: String, required: true }],
+    colors: [{ type: String, required: true }],
+    sizes: [{ type: String, required: true }],
+    brand: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Brand",
+      required: true,
+    },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
+    isDiscount: { type: Boolean, default: false },
+    inStock: { type: Number, required: true },
+    rating: { type: Number, required: true },
+    price: { type: Number, required: true },
+    sold: { type: Number },
+    numOfReviews: { type: Number },
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review",
+      },
+    ],
   },
   {
     timestamps: true,
