@@ -9,6 +9,7 @@ export interface iUser {
   avatar: string;
   isAdmin: boolean;
   cart: string[];
+  refreshToken: string;
 }
 
 export interface UserDocument extends iUser, Document {
@@ -25,6 +26,7 @@ export const userSchema = new mongoose.Schema(
     cart: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Product", default: [] },
     ],
+    refreshToken: { type: String },
   },
   {
     timestamps: true,

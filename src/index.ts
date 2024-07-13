@@ -2,7 +2,6 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import path from "path";
 import { v2 as cloudinary } from "cloudinary";
 
 import { errorHandler, notFound } from "./middlewares/error.middleware";
@@ -22,18 +21,13 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: [
-      "http://localhost:5173",
-      "https://mern-ecommerce-fe-a0dt.onrender.com",
-    ],
+    origin: ["http://localhost:5173", process.env.FRONTEND as string],
   })
 );
 app.use(express.json({ limit: "2MB" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 const port = process.env.PORT || 3000;
-
-app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);

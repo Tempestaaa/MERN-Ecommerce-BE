@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import User from "../models/user.model";
 import generateToken from "../utils/generateToken";
+import generateRefreshToken from "../utils/generateRefreshToken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 // REGISTER USER
 export const registerUser = expressAsyncHandler(
@@ -36,6 +38,12 @@ export const loginUser = expressAsyncHandler(
     }
 
     if (await user.comparePasswords(password)) {
+      const refreshToken = generateRefreshToken(user._id);
+      await User.findByIdAndUpdate(user._id, { refreshToken }, { new: true });
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        maxAge: 72 * 60 * 60 * 1000,
+      });
       res.status(200).json({
         user,
         access_token: generateToken(user._id),
@@ -47,10 +55,53 @@ export const loginUser = expressAsyncHandler(
   }
 );
 
-// LOGOUT USER
-// export const logoutUser = expressAsyncHandler(async(req:Request, res:Response) => {
+// HANDLE REFRESH TOKEN
+export const handleRefreshToken = expressAsyncHandler(
+  async (req: Request, res: Response) => {
+    const cookie = req.cookies;
+    if (!cookie) throw new Error("No refresh token");
+    const refreshToken = cookie.refreshToken;
+    const user = await User.findOne({ refreshToken });
+    if (!user) throw new Error("No refresh token/not matched in database");
+    jwt.sign(
+      refreshToken,
+      process.env.JWT_SECRET_KEY as string,
+      (err: any, decoded: any) => {
+        if (err || user?.id !== decoded?.id)
+          throw new Error("There is something wrong with refresh token");
+        const access_token = generateToken(user?.id);
+        res.json(access_token);
+      }
+    );
+  }
+);
 
-// })
+// LOGOUT USER
+export const logoutUser = expressAsyncHandler(
+  async (req: Request, res: Response) => {
+    const cookie = req.cookies;
+    if (!cookie) throw new Error("No refresh token");
+    const refreshToken = cookie.refreshToken;
+    const user = await User.findOne({ refreshToken });
+    if (!user) {
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        maxAge: 72 * 60 * 60 * 1000,
+      });
+      res.sendStatus(204);
+      return;
+    }
+
+    await User.findOneAndUpdate({ refreshToken }, { refreshToken: "" });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      maxAge: 72 * 60 * 60 * 1000,
+    });
+    res.sendStatus(204);
+  }
+);
 
 // AUTH USER
 export const getMe = expressAsyncHandler(
