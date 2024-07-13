@@ -15,14 +15,19 @@ export const registerUser = expressAsyncHandler(
       throw new Error("User already exists");
     }
 
-    const newUser = await User.create(req.body);
+    const user = await User.create(req.body);
     res.status(200).json({
-      _id: newUser._id,
-      username: newUser.username,
-      fullName: newUser.fullName,
-      avatar: newUser.avatar,
-      isAdmin: newUser.isAdmin,
-      cart: newUser.cart,
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      fullName: user.fullName,
+      avatar: user.avatar,
+      isAdmin: user.isAdmin,
+      phone: user.phone,
+      gender: user.gender,
+      dateOfBirth: user.dateOfBirth,
+      cart: user.cart,
+      wishlist: user.wishlist,
     });
   }
 );
@@ -45,11 +50,17 @@ export const loginUser = expressAsyncHandler(
         maxAge: 72 * 60 * 60 * 1000,
       });
       res.status(200).json({
+        _id: user._id,
         username: user.username,
+        email: user.email,
         fullName: user.fullName,
         avatar: user.avatar,
         isAdmin: user.isAdmin,
+        phone: user.phone,
+        gender: user.gender,
+        dateOfBirth: user.dateOfBirth,
         cart: user.cart,
+        wishlist: user.wishlist,
         access_token: generateToken(user._id),
       });
     } else {
