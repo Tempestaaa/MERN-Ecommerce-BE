@@ -23,11 +23,11 @@ export interface UserDocument extends iUser, Document {
 
 export const userSchema = new mongoose.Schema(
   {
-    username: { type: String, required: true, unique: true, min: 6 },
-    email: { type: String, required: true, unique: true, min: 6 },
+    username: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
     fullName: { type: String, required: true },
-    password: { type: String, required: true, min: 6 },
-    phone: { type: String, required: true },
+    password: { type: String, required: true },
+    phone: { type: String, required: true, unique: true },
     avatar: { type: String, default: "https://picsum.photos/id/63/200/300" },
     isAdmin: { type: Boolean, default: false },
     gender: { type: String, required: true },

@@ -8,11 +8,21 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 // REGISTER USER
 export const registerUser = expressAsyncHandler(
   async (req: Request, res: Response) => {
-    const { username } = req.body;
+    const { username, email, phone } = req.body;
     const duplicate = await User.findOne({ username });
     if (duplicate) {
       res.status(400);
       throw new Error("User already exists");
+    }
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
+      res.status(400);
+      throw new Error("Email already exists");
+    }
+    const phoneExists = await User.findOne({ phone });
+    if (phoneExists) {
+      res.status(400);
+      throw new Error("Phone already exists");
     }
 
     const user = await User.create(req.body);

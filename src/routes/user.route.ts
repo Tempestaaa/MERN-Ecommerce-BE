@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authUser } from "../middlewares/auth.middleware";
+import { authUser, isAdmin } from "../middlewares/auth.middleware";
 import {
   addOrRemoveCart,
   addOrRemoveWishList,
@@ -34,7 +34,7 @@ router.get("/wishlist", authUser, getWishList);
 router.post("/remove-wishlist", authUser, removeAllInWishList);
 
 // ========== ADMIN ==========
-router.get("/", authUser, getAllUsers);
-router.delete("/delete-user/:id", authUser, deleteUser);
+router.get("/", authUser, isAdmin, getAllUsers);
+router.delete("/delete-user/:id", authUser, isAdmin, deleteUser);
 
 export default router;
