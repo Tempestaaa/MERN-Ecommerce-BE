@@ -3,7 +3,7 @@ import {
   addProduct,
   getAllProducts,
   getProduct,
-  removeProduct,
+  deleteProduct,
   updateProduct,
 } from "../controllers/product.controller";
 import { v2 as cloudinary } from "cloudinary";
@@ -13,7 +13,7 @@ const router = Router();
 
 router.post("/add", addProduct);
 router.get("/", getAllProducts);
-router.route("/").get(getProduct).put(updateProduct).delete(removeProduct);
+router.route("/").get(getProduct).put(updateProduct).delete(deleteProduct);
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });

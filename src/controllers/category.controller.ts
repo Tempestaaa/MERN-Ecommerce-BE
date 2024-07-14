@@ -83,7 +83,7 @@ export const getAllCategories = expressAsyncHandler(
       .skip(skip);
 
     res.status(200).json({
-      Categorys: allCategories,
+      categories: allCategories,
       page,
       pages: Math.ceil(total / limit),
       total,

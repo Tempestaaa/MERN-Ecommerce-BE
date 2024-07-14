@@ -3,21 +3,21 @@ import { iBrand } from "./brand.model";
 import { iCategory } from "./category.model";
 import { iReview } from "./review.model";
 
-interface iProduct {
+export interface iProduct {
   _id: string;
   name: string;
   slug: string;
   desc: string;
-  images: string;
+  images: string[];
   colors: string;
   sizes: string;
   brand: iBrand;
   category: iCategory;
   inStock: number;
   rating: number;
-  price: number;
+  oldPrice: number;
+  newPrice: number;
   sold: number;
-  isDiscount: boolean;
   numOfReviews: number;
   reviews: iReview[];
 }
@@ -40,10 +40,10 @@ const productSchema = new mongoose.Schema<iProduct>(
       ref: "Category",
       required: true,
     },
-    isDiscount: { type: Boolean, default: false },
     inStock: { type: Number, required: true },
     rating: { type: Number, required: true },
-    price: { type: Number, required: true },
+    oldPrice: { type: Number },
+    newPrice: { type: Number, required: true },
     sold: { type: Number },
     numOfReviews: { type: Number },
     reviews: [
