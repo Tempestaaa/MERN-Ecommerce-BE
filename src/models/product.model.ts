@@ -9,8 +9,8 @@ export interface iProduct {
   slug: string;
   desc: string;
   images: string[];
-  colors: string;
-  sizes: string;
+  colors: string[];
+  sizes: string[];
   brand: iBrand;
   category: iCategory;
   inStock: number;

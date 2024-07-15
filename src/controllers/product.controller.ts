@@ -19,18 +19,20 @@ const slugify = (text: string) => {
 // ADD PRODUCT
 export const addProduct = expressAsyncHandler(
   async (req: Request, res: Response) => {
-    const productData: iProduct = req.body;
     const files = req.files as Express.Multer.File[];
+    const productData: iProduct = req.body;
     const uploadFiles = files.map(async (item) => {
-      const b64 = Buffer.from(item.mimetype).toString("base64");
-      const dataUri = "data:" + item.mimetype + ";base64," + b64;
+      const b64 = Buffer.from(item.buffer).toString("base64");
+      let dataUri = "data:" + item.mimetype + ";base64," + b64;
       const uploadRes = await cloudinary.uploader.upload(dataUri);
       return uploadRes.url;
     });
     const imageUrls = await Promise.all(uploadFiles);
+
     productData.images = imageUrls;
     productData.slug = slugify(productData.name);
 
+    const data = { productData, files };
     await Product.create(productData);
     res.status(201).json({ message: "Product added" });
   }
@@ -51,6 +53,8 @@ export const getAllProducts = expressAsyncHandler(
         ],
       }),
     })
+      .populate("brand")
+      .populate("category")
       .sort({ updatedAt: 1 })
       .limit(limit)
       .skip(skip);

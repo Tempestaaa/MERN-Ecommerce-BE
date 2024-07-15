@@ -11,16 +11,16 @@ import multer from "multer";
 
 const router = Router();
 
-router.post("/add", addProduct);
-router.get("/", getAllProducts);
-router.route("/").get(getProduct).put(updateProduct).delete(deleteProduct);
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });
 
+router.post("/add", upload.array("images"), addProduct);
+router.get("/", getAllProducts);
+router.route("/").get(getProduct).put(updateProduct).delete(deleteProduct);
+
 router.post(
   "/upload",
-  upload.array("img"),
+  upload.array("images"),
   async (req: Request, res: Response) => {
     const files = req.files as Express.Multer.File[];
     const body = req.body;
