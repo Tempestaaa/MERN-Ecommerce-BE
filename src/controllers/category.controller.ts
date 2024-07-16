@@ -11,7 +11,7 @@ export const addCategory = expressAsyncHandler(
       res.status(400);
       throw new Error("Category already exists");
     }
-    await Category.create({ name });
+    await Category.create(req.body);
     res.status(201).json({ message: "Category added" });
   }
 );
@@ -24,13 +24,9 @@ export const updateCategory = expressAsyncHandler(
       res.status(400);
       throw new Error("Name is required");
     }
-    const category = await Category.findByIdAndUpdate(
-      req.params.id,
-      { name },
-      {
-        new: true,
-      }
-    );
+    const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     if (!category) {
       res.status(404);
       throw new Error("Category not found");
